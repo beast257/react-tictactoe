@@ -49,7 +49,9 @@ function HistoryItem(props) {
   const move = props.move;
   return (
     <li key={move}>
-      <a href="#" onClick={() => props.onClick(move)}>{props.description}</a>
+      <a className={props.isSelected ? "selected" : ""} href="#" onClick={() => props.onClick(move)}>
+        {props.description}
+      </a>
     </li>
   );
 }
@@ -62,6 +64,7 @@ class History extends React.Component {
         onClick={this.props.onClick}
         move={stepNumber}
         description={historyState.description}
+        isSelected={this.props.selectedStep === stepNumber}
       />
     });
   }
@@ -144,6 +147,7 @@ class Game extends React.Component {
           <History
             onClick={(stepNumber) => this.jumpTo(stepNumber)}
             history={history}
+            selectedStep={this.state.stepNumber}
           />
         </div>
       </div>
