@@ -45,6 +45,36 @@ class Board extends React.Component {
   }
 }
 
+function HistoryItem(props) {
+  const move = props.move;
+  return (
+    <li key={move}>
+      <a href="#" onClick={() => props.onClick(move)}>{props.description}</a>
+    </li>
+  );
+}
+
+class History extends React.Component {
+  renderHistoryItems(history) {
+    return history.map((historyState, stepNumber) => {
+      return <HistoryItem
+        key={stepNumber}
+        onClick={this.props.onClick}
+        move={stepNumber}
+        description={historyState.description}
+      />
+    });
+  }
+
+  render() {
+    return (
+      <ol>
+        {this.renderHistoryItems(this.props.history)}
+      </ol>
+    );
+  }
+}
+
 class Game extends React.Component {
   constructor() {
     super();
@@ -94,14 +124,6 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
-      return (
-        <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>{step.description}</a>
-        </li>
-      );
-    });
-
     let status;
     if (winner) {
       status = "Winner: " + winner;
@@ -119,7 +141,10 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <History
+            onClick={(stepNumber) => this.jumpTo(stepNumber)}
+            history={history}
+          />
         </div>
       </div>
     );
