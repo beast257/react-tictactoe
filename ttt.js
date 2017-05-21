@@ -1,3 +1,9 @@
+const humanReadableCoordinates = [
+    '(1,1)', '(2,1)', '(3,1)',
+    '(1,2)', '(2,2)', '(3,2)',
+    '(1,3)', '(2,3)', '(3,3)',
+];
+
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -45,7 +51,8 @@ class Game extends React.Component {
     this.state = {
       history: [
         {
-          squares: Array(9).fill(null)
+          squares: Array(9).fill(null),
+          description: "Game start"
         }
       ],
       stepNumber: 0,
@@ -56,18 +63,21 @@ class Game extends React.Component {
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
+    const stepNumber = history.length;
     const squares = current.squares.slice();
+    const player = this.state.xIsNext ? "X" : "O";
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? "X" : "O";
+    squares[i] = player;
     this.setState({
       history: history.concat([
         {
-          squares: squares
+          squares: squares,
+          description: `Move ${stepNumber}: ${player} to ${humanReadableCoordinates[i]}`
         }
       ]),
-      stepNumber: history.length,
+      stepNumber: stepNumber,
       xIsNext: !this.state.xIsNext
     });
   }
@@ -85,10 +95,9 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ? "Move #" + move : "Game start";
       return (
         <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+          <a href="#" onClick={() => this.jumpTo(move)}>{step.description}</a>
         </li>
       );
     });
