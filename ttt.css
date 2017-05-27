@@ -52,3 +52,11 @@ ol, ul {
 .selected {
   font-weight: bold;
 }
+
+.winner {
+  animation: winningLine 1s infinite alternate;
+}
+
+@keyframes winningLine {
+  100% { color: gold; }
+}
