@@ -60,8 +60,21 @@ function HistoryItem(props) {
 }
 
 class History extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      sortAscending: true
+    };
+  }
+
   renderHistoryItems(history) {
-    return history.map((historyState, stepNumber) => {
+    let currentHistory = history.slice();
+    if (!this.state.sortAscending) {
+      currentHistory.reverse();
+    }
+    return currentHistory.map((historyState, arrayIndex) => {
+      let stepNumber = (this.state.sortAscending
+          ? arrayIndex : currentHistory.length - 1 - arrayIndex);
       return <HistoryItem
         key={stepNumber}
         onClick={this.props.onClick}
@@ -72,11 +85,23 @@ class History extends React.Component {
     });
   }
 
+  sortHistory() {
+    this.setState({
+      sortAscending: !this.state.sortAscending
+    })
+  }
+
   render() {
+    let order = (this.state.sortAscending
+        ? "Sort in descending order" : "Sort in ascending order");
+
     return (
-      <ol>
-        {this.renderHistoryItems(this.props.history)}
-      </ol>
+      <div>
+        <ul>
+          {this.renderHistoryItems(this.props.history)}
+        </ul>
+        <a onClick={() => this.sortHistory()} href="#">{order}</a>
+      </div>
     );
   }
 }
